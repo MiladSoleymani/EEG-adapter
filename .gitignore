@@ -205,3 +205,33 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific
+# Data files
+data/
+*.fif
+*.edf
+*.bdf
+*.gdf
+
+# Model checkpoints
+checkpoints/*.pt
+checkpoints/*.pth
+checkpoints/*.ckpt
+
+# Logs
+logs/
+lightning_logs/
+wandb/
+tensorboard/
+
+# Results and figures
+results/
+*.png
+*.jpg
+*.pdf
+*.svg
+
+# Custom configs (keep default)
+configs/*_config.yaml
+!configs/default_config.yaml

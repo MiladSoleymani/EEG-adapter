@@ -1,0 +1,98 @@
+# ECoG-ATCNet-LoRA Configuration File
+
+# Data Configuration
+data:
+  data_prefix: "/path/to/your/data"  # Update this path
+  freq_band: [2, 40]  # Bandpass filter range in Hz (null for no filter)
+  time_range: [0.0, 4.0]  # Time window in seconds
+  remove_bad_channels: true
+  scale: true  # Apply StandardScaler per channel
+
+  # Training subjects (base model)
+  base_train_subjects: [2, 3, 4, 5]  # Subject IDs for base training
+  base_train_sessions: [0, 1]  # Session IDs
+
+  # Validation subjects
+  base_val_subjects: [1]
+  base_val_sessions: [1]
+
+  # LoRA fine-tuning subjects
+  lora_train_subjects: [1]
+  lora_train_sessions: [0]
+
+  # Test subjects
+  test_subjects: [1]
+  test_sessions: [1]
+
+# Model Configuration
+model:
+  in_channels: 1
+  num_classes: 4  # Will be auto-detected from data
+  num_windows: 3
+  num_electrodes: null  # Will be auto-detected from data
+  chunk_size: null  # Will be auto-detected from data
+  F1: 16  # Number of temporal filters
+  D: 2  # Depth multiplier
+  conv_pool_size: 7
+  tcn_kernel_size: 4
+  tcn_depth: 2
+
+# LoRA Configuration
+lora:
+  enabled: true
+  rank: 8  # Low-rank dimension
+  alpha: 16  # Scaling factor
+  target_modules: ['dense']  # Modules to apply LoRA to
+  dropout: 0.0
+
+# Training Configuration - Base Model
+training:
+  base:
+    batch_size: 32
+    max_epochs: 50
+    learning_rate: 0.001
+    weight_decay: 0.0
+    optimizer: 'adam'  # adam, adamw, sgd
+    metrics: ['accuracy', 'f1score', 'precision', 'recall']
+
+  # LoRA Fine-tuning
+  lora:
+    batch_size: 32
+    max_epochs: 30
+    learning_rate: 0.0005  # Higher LR for LoRA fine-tuning
+    weight_decay: 0.0
+    optimizer: 'adam'
+    metrics: ['accuracy', 'f1score', 'precision', 'recall']
+
+# Hardware Configuration
+hardware:
+  accelerator: 'auto'  # auto, cpu, gpu, mps
+  devices: 1
+  num_workers: 4  # DataLoader workers
+
+# Logging and Checkpointing
+logging:
+  log_dir: 'logs'
+  checkpoint_dir: 'checkpoints'
+  save_top_k: 3  # Save top k models
+  monitor: 'val_accuracy'  # Metric to monitor
+  mode: 'max'  # max or min
+  verbose: true
+
+# Paths
+paths:
+  base_model_path: 'checkpoints/ecog_atcnet_base_model.pt'
+  lora_model_path: 'checkpoints/ecog_atcnet_lora_model.pt'
+  results_dir: 'results'
+
+# Visualization
+visualization:
+  plot_psd: true
+  plot_training_curves: true
+  plot_confusion_matrix: true
+  save_figures: true
+  figure_format: 'png'  # png, pdf, svg
+  dpi: 150
+
+# Random Seed
+seed: 42
