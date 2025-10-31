@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from configs import load_config
 from data.dataset import MultiSubjectECoGDataset, create_file_list
-from models import ATCNet
+from models import ATCNet, add_lora_to_model
 from utils.trainer import ClassifierTrainer
 
 
@@ -20,7 +20,8 @@ def evaluate_model(
     test_loader: DataLoader,
     num_classes: int,
     accelerator: str = 'cpu',
-    model_name: str = "Model"
+    model_name: str = "Model",
+    is_lora: bool = False
 ):
     """
     Evaluate a trained model.
@@ -37,6 +38,8 @@ def evaluate_model(
         Device to use
     model_name : str
         Name for display
+    is_lora : bool
+        Whether the model uses LoRA adapters
 
     Returns
     -------
@@ -65,6 +68,17 @@ def evaluate_model(
         tcn_kernel_size=config.get('model.tcn_kernel_size'),
         tcn_depth=config.get('model.tcn_depth')
     )
+
+    # Add LoRA adapters if needed
+    if is_lora:
+        lora_config = config.get('lora')
+        if lora_config.get('enabled', False):
+            model = add_lora_to_model(
+                model,
+                rank=lora_config.get('rank', 8),
+                alpha=lora_config.get('alpha', 16),
+                target_modules=lora_config.get('target_modules', ['dense'])
+            )
 
     # Load weights
     model.load_state_dict(torch.load(model_path, map_location='cpu'))
@@ -189,7 +203,8 @@ def main(config_path=None, base_only=False, lora_only=False):
                 test_loader=test_loader,
                 num_classes=num_classes,
                 accelerator=accelerator,
-                model_name="LoRA Fine-tuned Model"
+                model_name="LoRA Fine-tuned Model",
+                is_lora=True  # Enable LoRA adapters for loading
             )
             results['lora'] = lora_results
         else:
