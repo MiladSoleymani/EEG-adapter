@@ -10,6 +10,16 @@ from .visualization import (
     visualize_sample_signals
 )
 
+from .scheduler import (
+    WarmupCosineScheduler,
+    create_scheduler
+)
+
+from .trainer import (
+    ClassifierTrainer,
+    classification_metrics
+)
+
 __all__ = [
     'compute_mean_psd',
     'plot_mean_psd',
@@ -17,5 +27,9 @@ __all__ = [
     'plot_parameter_comparison',
     'plot_training_curves',
     'plot_confusion_matrix',
-    'visualize_sample_signals'
+    'visualize_sample_signals',
+    'WarmupCosineScheduler',
+    'create_scheduler',
+    'ClassifierTrainer',
+    'classification_metrics'
 ]

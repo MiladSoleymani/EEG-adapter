@@ -49,11 +49,19 @@ lora:
 training:
   base:
     batch_size: 32
-    max_epochs: 50
+    max_epochs: 10
     learning_rate: 0.001
     weight_decay: 0.0
     optimizer: 'adam'  # adam, adamw, sgd
     metrics: ['accuracy', 'f1score', 'precision', 'recall']
+
+    # Learning rate scheduler
+    scheduler:
+      enabled: true
+      type: 'warmup_cosine'  # warmup_cosine, cosine, step, exponential, none
+      warmup_epochs: 5  # Number of warmup epochs
+      min_lr: 1.0e-6  # Minimum learning rate for cosine annealing
+      warmup_start_lr: 1.0e-7  # Starting LR for warmup (if null, uses min_lr)
 
   # LoRA Fine-tuning
   lora:
@@ -63,6 +71,14 @@ training:
     weight_decay: 0.0
     optimizer: 'adam'
     metrics: ['accuracy', 'f1score', 'precision', 'recall']
+
+    # Learning rate scheduler
+    scheduler:
+      enabled: true
+      type: 'warmup_cosine'  # warmup_cosine, cosine, step, exponential, none
+      warmup_epochs: 3  # Number of warmup epochs
+      min_lr: 1.0e-7  # Minimum learning rate for cosine annealing
+      warmup_start_lr: 1.0e-8  # Starting LR for warmup (if null, uses min_lr)
 
 # Hardware Configuration
 hardware:

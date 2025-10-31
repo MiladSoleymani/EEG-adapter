@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from configs import load_config
 from data.dataset import MultiSubjectECoGDataset, create_file_list
 from models import ATCNet, add_lora_to_model, print_lora_info
-from trainer import ClassifierTrainer
+from utils.trainer import ClassifierTrainer
 
 
 def main(config_path=None):
@@ -183,6 +183,11 @@ def main(config_path=None):
 
     print(f"\nUsing accelerator: {accelerator}")
 
+    max_epochs = config.get('training.lora.max_epochs')
+
+    # Get scheduler configuration
+    scheduler_config = config.get('training.lora.scheduler', {})
+
     trainer = ClassifierTrainer(
         model=model,
         num_classes=num_classes,
@@ -192,14 +197,25 @@ def main(config_path=None):
         accelerator=accelerator,
         verbose=config.get('logging.verbose'),
         metrics=config.get('training.lora.metrics'),
-        optimizer=config.get('training.lora.optimizer')
+        optimizer=config.get('training.lora.optimizer'),
+        scheduler_config=scheduler_config,
+        max_epochs=max_epochs
     )
 
-    max_epochs = config.get('training.lora.max_epochs')
     print(f"Training for {max_epochs} epochs...")
     print(f"Batch size: {batch_size}")
     print(f"Learning rate: {config.get('training.lora.learning_rate')}")
     print(f"Optimizer: {config.get('training.lora.optimizer')}")
+
+    # Print scheduler info
+    if scheduler_config.get('enabled', False):
+        print(f"LR Scheduler: {scheduler_config.get('type', 'warmup_cosine')}")
+        print(f"  Warmup epochs: {scheduler_config.get('warmup_epochs', 0)}")
+        print(f"  Min LR: {scheduler_config.get('min_lr', 1e-6)}")
+        if scheduler_config.get('warmup_start_lr') is not None:
+            print(f"  Warmup start LR: {scheduler_config.get('warmup_start_lr')}")
+    else:
+        print("LR Scheduler: Disabled")
 
     # Train
     trainer.fit(train_loader, val_loader, max_epochs=max_epochs)

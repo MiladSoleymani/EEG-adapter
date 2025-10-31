@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from configs import load_config
 from data.dataset import MultiSubjectECoGDataset, create_file_list
 from models import ATCNet
-from trainer import ClassifierTrainer
+from utils.trainer import ClassifierTrainer
 
 
 def evaluate_model(
