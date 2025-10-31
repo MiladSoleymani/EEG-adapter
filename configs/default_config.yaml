@@ -2,14 +2,14 @@
 
 # Data Configuration
 data:
-  data_prefix: "/path/to/your/data"  # Update this path
+  data_prefix: "/kaggle/input/high-gamma-dataset-fif"  # Update this path
   freq_band: [2, 40]  # Bandpass filter range in Hz (null for no filter)
   time_range: [0.0, 4.0]  # Time window in seconds
   remove_bad_channels: true
   scale: true  # Apply StandardScaler per channel
 
   # Training subjects (base model)
-  base_train_subjects: [2, 3, 4, 5]  # Subject IDs for base training
+  base_train_subjects: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]  # Subject IDs for base training
   base_train_sessions: [0, 1]  # Session IDs
 
   # Validation subjects
@@ -42,8 +42,8 @@ lora:
   enabled: true
   rank: 8  # Low-rank dimension
   alpha: 16  # Scaling factor
-  target_modules: ['dense']  # Modules to apply LoRA to
-  dropout: 0.0
+  target_modules: ['dense', 'msa']  # Modules to apply LoRA to
+  dropout: 0.1
 
 # Training Configuration - Base Model
 training:
