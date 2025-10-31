@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from configs import load_config
-from dataset import MultiSubjectECoGDataset, create_file_list
+from data.dataset import MultiSubjectECoGDataset, create_file_list
 from models import ATCNet, add_lora_to_model, count_parameters, print_lora_info
 from trainer import ClassifierTrainer
 

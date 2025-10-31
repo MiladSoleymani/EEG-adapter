@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from configs import load_config
-from dataset import MultiSubjectECoGDataset, create_file_list
+from data.dataset import MultiSubjectECoGDataset, create_file_list
 from models import ATCNet, count_parameters
 from trainer import ClassifierTrainer
 

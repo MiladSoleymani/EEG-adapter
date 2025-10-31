@@ -30,19 +30,24 @@ EEG-adapter/
 │   ├── atcnet.py               # ATCNet architecture
 │   ├── lora.py                 # LoRA implementation
 │   └── __init__.py
+├── data/
+│   ├── dataset.py              # Data loading and preprocessing
+│   └── __init__.py
 ├── utils/
 │   ├── visualization.py        # Plotting utilities
 │   └── __init__.py
 ├── scripts/
 │   ├── train_base.py           # Base model training
 │   ├── train_lora.py           # LoRA fine-tuning
-│   └── evaluate.py             # Model evaluation
-├── dataset.py                   # Data loading and preprocessing
-├── trainer.py                   # PyTorch Lightning trainer
+│   ├── evaluate.py             # Model evaluation
+│   └── create_custom_config.py # Config generator
+├── docs/
+│   └── QUICKSTART.md           # Quick start guide
 ├── notebooks/                   # Jupyter notebooks
 ├── checkpoints/                 # Saved models
 ├── logs/                        # Training logs
-├── data/                        # Dataset directory
+├── trainer.py                   # PyTorch Lightning trainer
+├── example.py                   # Example usage
 ├── requirements.txt
 └── README.md
 ```
@@ -254,7 +259,7 @@ Typical results on ECoG Motor Imagery data:
 Implement your own dataset class:
 
 ```python
-from dataset import MultiSubjectECoGDataset
+from data.dataset import MultiSubjectECoGDataset
 
 dataset = MultiSubjectECoGDataset(
     file_list=['path/to/file1.fif', 'path/to/file2.fif'],
