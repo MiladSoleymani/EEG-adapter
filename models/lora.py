@@ -89,9 +89,23 @@ class LinearWithLoRA(nn.Module):
             alpha=alpha
         )
 
+        # Store dimensions for compatibility
+        self.in_features = linear_layer.in_features
+        self.out_features = linear_layer.out_features
+
         # Freeze original linear layer
         for param in self.linear.parameters():
             param.requires_grad = False
+
+    @property
+    def weight(self):
+        """Expose weight attribute for compatibility with PyTorch modules."""
+        return self.linear.weight
+
+    @property
+    def bias(self):
+        """Expose bias attribute for compatibility with PyTorch modules."""
+        return self.linear.bias
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -131,6 +145,11 @@ def add_lora_to_model(
         List of module name substrings to target for LoRA.
         E.g., ['dense', 'linear', 'fc'] will add LoRA to all modules
         whose names contain these substrings.
+
+        For ATCNet:
+        - ['dense'] targets classification heads (3 layers)
+        - ['msa'] targets multi-head attention output projections (3 layers)
+        - ['dense', 'msa'] targets both (6 layers total, recommended)
 
     Returns
     -------

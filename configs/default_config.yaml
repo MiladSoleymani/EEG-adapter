@@ -42,7 +42,7 @@ lora:
   enabled: true
   rank: 8  # Low-rank dimension
   alpha: 16  # Scaling factor
-  target_modules: ['dense', 'msa']  # Modules to apply LoRA to
+  target_modules: ['dense', 'msa']  # Modules to apply LoRA to: 'dense' (classification), 'msa' (attention)
   dropout: 0.1
 
 # Training Configuration - Base Model
@@ -67,7 +67,7 @@ training:
   lora:
     batch_size: 32
     max_epochs: 30
-    learning_rate: 0.0005  # Higher LR for LoRA fine-tuning
+    learning_rate: 0.005  # Higher LR for LoRA fine-tuning
     weight_decay: 0.0
     optimizer: 'adam'
     metrics: ['accuracy', 'f1score', 'precision', 'recall']
@@ -76,8 +76,8 @@ training:
     scheduler:
       enabled: true
       type: 'warmup_cosine'  # warmup_cosine, cosine, step, exponential, none
-      warmup_epochs: 3  # Number of warmup epochs
-      min_lr: 1.0e-7  # Minimum learning rate for cosine annealing
+      warmup_epochs: 2  # Number of warmup epochs
+      min_lr: 1.0e-6  # Minimum learning rate for cosine annealing
       warmup_start_lr: 1.0e-8  # Starting LR for warmup (if null, uses min_lr)
 
 # Hardware Configuration
